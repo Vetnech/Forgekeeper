@@ -16,7 +16,7 @@ const client = new Client({
 const RoleChains = [
   {
     name: 'Expedition Crew',
-    categoryRoleId: '1401606566364577843', // ID of Expedition Crew
+    categoryRoleId: '1401605342495899688', // ID of Expedition Crew
     requiredRoles: [
       '1401605724542468157', // Expedition Scout
       '1401605833275609167', // Expedition Pathfinder
