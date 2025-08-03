@@ -7,6 +7,10 @@ I made this bot to create category roles for my level roles as the arcane bot wa
 listener.js is required to keep the bot online as the host demands it.   <br/>
 index.js is the start/run file.
 
-Contributions are welcome.
-This project is licensed.
+Contributions are welcome.  <br/>
+
+
+
+
+This project is licensed.  <br/>
 Visit the proper license file in this repository for more information.
