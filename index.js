@@ -1,20 +1,8 @@
-// ----- Port Listener  ----------------------------
-  const express = require('express');
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// ----- Bot             ----------------------------
-app.get('/', (req, res) => {
-  res.send('Bot is running.');
-});
-
-app.listen(PORT, () => {
-  console.log(`Web server listening on port ${PORT}`);
-});
-
---// Bot
-const { Client, GatewayIntentBits, Partials } = require('discord.js');
+// index.js
+require('./listener.js'); // Start the web listener first
 require('dotenv').config();
+
+const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
 const client = new Client({
   intents: [
@@ -27,36 +15,33 @@ const client = new Client({
   partials: [Partials.GuildMember],
 });
 
-// Example category role setup
 const RoleChains = [
   {
     name: 'Expedition Crew',
-    categoryRoleId: '1401605342495899688', // ID of Expedition Crew
+    categoryRoleId: '1401605342495899688',
     requiredRoles: [
-      '1401605724542468157', // Expedition Scout
-      '1401605833275609167', // Expedition Pathfinder
-      '1401606564045000724', // Expedition Leader
+      '1401605724542468157',
+      '1401605833275609167',
+      '1401606564045000724',
     ],
   },
-  
   {
     name: 'Common Guild',
-    categoryRoleId: '1401606566364577843', // ID of Common Guild
+    categoryRoleId: '1401606566364577843',
     requiredRoles: [
-      '1401606565802545262', // Guild Apprentice
-      '1401606566914035863', // Guild Artisan
-      '1401606568113606717', // Guild Strategist
+      '1401606565802545262',
+      '1401606566914035863',
+      '1401606568113606717',
     ],
   },
-  
   {
     name: 'Colony Command',
-    categoryRoleId: '1401607220063375370', // ID of Colony Command
+    categoryRoleId: '1401607220063375370',
     requiredRoles: [
-      '1401607222617833522', // Council Envoy
-      '1401607225016975371', // Councilor
-      '1401612980797440142', // High Councilor
-      '1401613087530025170', // Colony Commander
+      '1401607222617833522',
+      '1401607225016975371',
+      '1401612980797440142',
+      '1401613087530025170',
     ],
   },
 ];
@@ -72,13 +57,11 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
     );
     const hasCategory = newMember.roles.cache.has(chain.categoryRoleId);
 
-    // Assign if missing and conditions met
     if (hasAny && !hasCategory) {
       await newMember.roles.add(chain.categoryRoleId);
       console.log(`✅ Added ${chain.name} to ${newMember.user.tag}`);
     }
 
-    // Remove if doesn't meet any
     if (!hasAny && hasCategory) {
       await newMember.roles.remove(chain.categoryRoleId);
       console.log(`❌ Removed ${chain.name} from ${newMember.user.tag}`);
