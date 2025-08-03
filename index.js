@@ -1,3 +1,18 @@
+// ----- Port Listener  ----------------------------
+  const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// ----- Bot             ----------------------------
+app.get('/', (req, res) => {
+  res.send('Bot is running.');
+});
+
+app.listen(PORT, () => {
+  console.log(`Web server listening on port ${PORT}`);
+});
+
+--// Bot
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 require('dotenv').config();
 
