@@ -10,3 +10,14 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Web server listening on port ${PORT}`);
 });
+
+
+// Self Ping to check status
+const fetch = require('node-fetch');
+
+setInterval(() => {
+  fetch('https://forgekeeper.onrender.com').then(() =>
+    console.log('🔁 Self-ping finished. Bot is operational.')
+  );
+}, 5 * 60 * 1000); // every 5 minutes
+
