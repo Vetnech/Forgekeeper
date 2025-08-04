@@ -2,6 +2,7 @@
 require('./listener.js'); // Start the web listener first
 require('dotenv').config();
 
+// Actual Bot
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
 const client = new Client({
@@ -15,33 +16,36 @@ const client = new Client({
   partials: [Partials.GuildMember],
 });
 
+// Category role setup
 const RoleChains = [
   {
     name: 'Expedition Crew',
-    categoryRoleId: '1401605342495899688',
+    categoryRoleId: '1401605342495899688', // ID of Expedition Crew
     requiredRoles: [
-      '1401605724542468157',
-      '1401605833275609167',
-      '1401606564045000724',
+      '1401605724542468157', // Expedition Scout
+      '1401605833275609167', // Expedition Pathfinder
+      '1401606564045000724', // Expedition Leader
     ],
   },
+  
   {
     name: 'Common Guild',
-    categoryRoleId: '1401606566364577843',
+    categoryRoleId: '1401606566364577843', // ID of Common Guild
     requiredRoles: [
-      '1401606565802545262',
-      '1401606566914035863',
-      '1401606568113606717',
+      '1401606565802545262', // Guild Apprentice
+      '1401606566914035863', // Guild Artisan
+      '1401606568113606717', // Guild Strategist
     ],
   },
+  
   {
     name: 'Colony Command',
-    categoryRoleId: '1401607220063375370',
+    categoryRoleId: '1401607220063375370', // ID of Colony Command
     requiredRoles: [
-      '1401607222617833522',
-      '1401607225016975371',
-      '1401612980797440142',
-      '1401613087530025170',
+      '1401607222617833522', // Council Envoy
+      '1401607225016975371', // Councilor
+      '1401612980797440142', // High Councilor
+      '1401613087530025170', // Colony Commander
     ],
   },
 ];
