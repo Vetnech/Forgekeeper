@@ -13,6 +13,12 @@ module.exports = {
     // other global role references
   },
 
+  Commands: { // Commands config
+    PingOfftopic: [ // /pingofftopic command whitelisted channels only
+      '1401596819976486963', // MAIN: Offtopic
+    ],
+  },
+
   // Misc constants can go here too
   Bot: {
     NAME: 'Forgekeeper',
