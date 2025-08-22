@@ -48,18 +48,12 @@ class RoleManager {
   // Define cross-guild sync rules
   _initSyncRules() {
     this.SyncRules = [
-      {
-        fromGuild: Globals.Guilds.MAIN,
-        requiredRoles: ['ROLE_ID_MAIN1', 'ROLE_ID_MAIN2'], // must have BOTH
-        toGuild: Globals.Guilds.WIKI,
-        grantRoles: ['ROLE_ID_WIKI1'], // roles to add in wiki guild
-      },
-      {
-        fromGuild: Globals.Guilds.MAIN,
-        requiredRoles: ['BOOSTER_ROLE_ID'], // server booster in main guild
-        toGuild: Globals.Guilds.WIKI,
-        grantRoles: ['BOOSTER_PERK_ROLE_ID'], // grant booster perk role in wiki
-      },
+      //{
+      //  fromGuild: Globals.Guilds.MAIN,
+      //  requiredRoles: ['ROLE_ID_MAIN1', 'ROLE_ID_MAIN2'], // must have BOTH
+      //  toGuild: Globals.Guilds.WIKI,
+      //  grantRoles: ['ROLE_ID_WIKI1'], // roles to add in wiki guild
+      //},
     ];
   }
 
