@@ -7,6 +7,12 @@ module.exports = {
     WIKI: '1408595595958161562',   // Wiki Discord
   },
 
+  Roles: {
+    BOOSTER_MAIN: 'ROLE_ID_MAINBOOSTER',
+    BOOSTER_WIKI: 'ROLE_ID_WIKIBOOSTER',
+    // other global role references
+  },
+
   // Misc constants can go here too
   Bot: {
     NAME: 'Forgekeeper',
