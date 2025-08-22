@@ -3,9 +3,8 @@
 
 module.exports = {
   Guilds: {
-    MAIN: 'GUILD_ID_1',   // Main Discord
-    WIKI: 'GUILD_ID_2',   // Wiki Discord
-    TEST: 'GUILD_ID_3',   // (optional test server)
+    MAIN: '1400081340132626432',   // Main Discord
+    WIKI: '1408595595958161562',   // Wiki Discord
   },
 
   // Misc constants can go here too
