@@ -1,23 +1,16 @@
 // RoleManager.js
-// Handles role chain logic for multiple guilds
+const Globals = require('./Globals');
 
 class RoleManager {
   constructor() {
-    /** 
-     * Stores role chains for each guild
-     * Format:
-     * { [guildId]: [{ name, categoryRoleId, requiredRoles: [] }] }
-     */
     this.RoleChainsByGuild = {};
-
-    // Initialize role chains for all guilds here
+    this.SyncRules = []; // cross-guild sync rules
     this._initRoleChains();
+    this._initSyncRules();
   }
 
-  // Private method to setup role chains per guild
   _initRoleChains() {
-    // Guild 1: Main Discord
-    this.RoleChainsByGuild['1400081340132626432'] = [
+    this.RoleChainsByGuild[Globals.Guilds.MAIN] = [
       {
         name: 'Expedition Crew',
         categoryRoleId: '1401605342495899688', // ID of Expedition Crew
@@ -48,24 +41,32 @@ class RoleManager {
       },
     ];
 
-    // Guild 2: Wiki Discord
-    this.RoleChainsByGuild['GUILD_ID_2'] = [
-      // Example chains for second guild
+    this.RoleChainsByGuild[Globals.Guilds.WIKI] = [
+    ];
+  }
+
+  // Define cross-guild sync rules
+  _initSyncRules() {
+    this.SyncRules = [
       {
-        name: 'Wiki Staff',
-        categoryRoleId: 'GUILD2_CATEGORY_ROLE_ID',
-        requiredRoles: [
-          'GUILD2_ROLE_1',
-          'GUILD2_ROLE_2',
-        ],
+        fromGuild: Globals.Guilds.MAIN,
+        requiredRoles: ['ROLE_ID_MAIN1', 'ROLE_ID_MAIN2'], // must have BOTH
+        toGuild: Globals.Guilds.WIKI,
+        grantRoles: ['ROLE_ID_WIKI1'], // roles to add in wiki guild
+      },
+      {
+        fromGuild: Globals.Guilds.MAIN,
+        requiredRoles: ['BOOSTER_ROLE_ID'], // server booster in main guild
+        toGuild: Globals.Guilds.WIKI,
+        grantRoles: ['BOOSTER_PERK_ROLE_ID'], // grant booster perk role in wiki
       },
     ];
   }
 
-  // Called on guildMemberUpdate
+  // Normal role chain handler (same as before)
   async handleMemberUpdate(newMember) {
     const GuildChains = this.RoleChainsByGuild[newMember.guild.id];
-    if (!GuildChains) return; // No role chains configured for this guild
+    if (!GuildChains) return;
 
     for (const chain of GuildChains) {
       const hasAny = chain.requiredRoles.some(roleId =>
@@ -73,16 +74,52 @@ class RoleManager {
       );
       const hasCategory = newMember.roles.cache.has(chain.categoryRoleId);
 
-      // Add category role if member has any required role but not the category
       if (hasAny && !hasCategory) {
         await newMember.roles.add(chain.categoryRoleId).catch(console.error);
         console.log(`✅ Added ${chain.name} to ${newMember.user.tag} in ${newMember.guild.name}`);
       }
 
-      // Remove category role if member has none of the required roles but still has category
       if (!hasAny && hasCategory) {
         await newMember.roles.remove(chain.categoryRoleId).catch(console.error);
         console.log(`❌ Removed ${chain.name} from ${newMember.user.tag} in ${newMember.guild.name}`);
+      }
+    }
+
+    // After local chains, check cross-guild sync
+    await this.syncRoles(newMember);
+  }
+
+  // Cross-guild role sync
+  async syncRoles(newMember) {
+    const client = newMember.client;
+
+    for (const rule of this.SyncRules) {
+      if (newMember.guild.id !== rule.fromGuild) continue;
+
+      // Check if member has all required roles in fromGuild
+      const hasAll = rule.requiredRoles.every(roleId =>
+        newMember.roles.cache.has(roleId)
+      );
+
+      // Find corresponding member in target guild
+      const targetGuild = client.guilds.cache.get(rule.toGuild);
+      if (!targetGuild) continue;
+
+      const targetMember = await targetGuild.members.fetch(newMember.id).catch(() => null);
+      if (!targetMember) continue;
+
+      for (const roleId of rule.grantRoles) {
+        const hasRole = targetMember.roles.cache.has(roleId);
+
+        if (hasAll && !hasRole) {
+          await targetMember.roles.add(roleId).catch(console.error);
+          console.log(`🔄 Synced role ${roleId} → Added to ${targetMember.user.tag} in ${targetGuild.name}`);
+        }
+
+        if (!hasAll && hasRole) {
+          await targetMember.roles.remove(roleId).catch(console.error);
+          console.log(`🔄 Synced role ${roleId} → Removed from ${targetMember.user.tag} in ${targetGuild.name}`);
+        }
       }
     }
   }
