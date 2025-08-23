@@ -56,7 +56,7 @@ async function execute(interaction) {
     const offTopicRole = channel.guild.roles.cache.find(r => r.name === 'Off-topic Notice');
     if (!offTopicRole) return interaction.editReply({ content: '❌ Off-topic role not found.' });
 
-    await channel.send(`${offTopicRole}. Ping sponsored by ${member}`);
+    await channel.send(`${offTopicRole} ${member}`);
 
     // 6️⃣ Update cooldowns
     CooldownTracker.server = now;
