@@ -22,7 +22,10 @@ async function execute(interaction) {
 
   try {
     // Defer reply immediately to extend time window
-    await interaction.deferReply({ ephemeral: true });
+    if (!interaction.replied && !interaction.deferred) {
+      await interaction.deferReply({ flags: 64 });
+    }
+
 
     // 1️⃣ Ensure channel is whitelisted
     if (!Globals.Commands.PingOfftopic.includes(channel.id)) {
