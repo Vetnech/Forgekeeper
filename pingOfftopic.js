@@ -20,20 +20,23 @@ async function execute(interaction) {
   const { channel, member } = interaction;
   const now = Date.now();
 
+  // Defer reply immediately to prevent Unknown Interaction errors
+  await interaction.deferReply({ flags: 64 }); // ephemeral
+
   // 1️⃣ Ensure channel is whitelisted
   if (!Globals.Commands.PingOfftopic.includes(channel.id)) {
-    return interaction.reply({ content: '❌ This command cannot be used here.', ephemeral: true });
+    return interaction.editReply({ content: '❌ This command cannot be used here.' });
   }
 
   // 2️⃣ Ignore threads
   if (channel.isThread()) {
-    return interaction.reply({ content: '❌ Cannot use this command inside threads.', ephemeral: true });
+    return interaction.editReply({ content: '❌ Cannot use this command inside threads.' });
   }
 
   // 3️⃣ Server cooldown
   if (CooldownTracker.server && now - CooldownTracker.server < Cooldowns.server) {
     const remaining = Math.ceil((Cooldowns.server - (now - CooldownTracker.server)) / 60000);
-    return interaction.reply({ content: `❌ Server cooldown active. Try again in ${remaining} min.`, ephemeral: true });
+    return interaction.editReply({ content: `❌ Server cooldown active. Try again in ${remaining} min.` });
   }
 
   // 4️⃣ User cooldown
@@ -41,13 +44,13 @@ async function execute(interaction) {
     const lastUsed = CooldownTracker.users.get(member.id);
     if (now - lastUsed < Cooldowns.user) {
       const remaining = Math.ceil((Cooldowns.user - (now - lastUsed)) / 60000);
-      return interaction.reply({ content: `❌ You are on cooldown. Try again in ${remaining} min.`, ephemeral: true });
+      return interaction.editReply({ content: `❌ You are on cooldown. Try again in ${remaining} min.` });
     }
   }
 
   // 5️⃣ Send ping message
   const offTopicRole = channel.guild.roles.cache.find(r => r.name === 'Off-topic Notice');
-  if (!offTopicRole) return interaction.reply({ content: '❌ Off-topic role not found.', ephemeral: true });
+  if (!offTopicRole) return interaction.editReply({ content: '❌ Off-topic role not found.' });
 
   await channel.send(`${offTopicRole}. Ping sponsored by ${member}`);
 
@@ -55,7 +58,8 @@ async function execute(interaction) {
   CooldownTracker.server = now;
   CooldownTracker.users.set(member.id, now);
 
-  await interaction.reply({ content: '✅ Off-topic ping sent!', ephemeral: true });
+  // 7️⃣ Confirm to user
+  await interaction.editReply({ content: '✅ Off-topic ping sent!' });
 }
 
 module.exports = { execute };
