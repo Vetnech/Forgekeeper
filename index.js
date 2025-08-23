@@ -6,6 +6,7 @@ const { Client, GatewayIntentBits, Partials } = require('discord.js');
 const RoleManager = require('./RoleManager');
 const PingOfftopic = require('./pingOfftopic');
 const Globals = require('./Globals');
+const { registerCommands } = require('./registerCommands');
 
 const client = new Client({
   intents: [
@@ -18,9 +19,14 @@ const client = new Client({
   partials: [Partials.GuildMember],
 });
 
-client.on('ready', () => {
+// On ready
+client.on('ready', async () => {
   console.log(`🤖 Logged in as ${client.user.tag}`);
+
+  // Auto-register slash commands in all guilds
+  await registerCommands(client);
 });
+
 
 // Delegate guildMemberUpdate entirely to RoleManager
 client.on('guildMemberUpdate', async (_, newMember) => {
