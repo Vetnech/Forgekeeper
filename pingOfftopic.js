@@ -56,7 +56,15 @@ async function execute(interaction) {
   CooldownTracker.users.set(member.id, now);
 
   // 7️⃣ Confirm to user
-  await interaction.reply({ content: '✅ Off-topic ping sent!', flags: 64 });
+  try {
+    await interaction.reply({ content: '✅ Off-topic ping sent!', flags: 64 });
+  } catch (err) {
+    if (err.code === 10062) {
+      console.warn('⚠️ Interaction expired, cannot reply.');
+    } else {
+      throw err;
+    }
+  }
 }
 
 module.exports = { execute };
