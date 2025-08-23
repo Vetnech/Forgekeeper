@@ -7,10 +7,10 @@ const Globals = require('./Globals');
 async function registerCommands(client) {
   const rest = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN);
 
-  // Define commands
+  // Define slash commands
   const commands = [
     {
-      name: Globals.Commands.PingOfftopic.Name || 'pingofftopic',
+      name: 'pingofftopic', // hardcoded since Globals only has channel IDs
       description: 'Ping Off-topic notice',
     },
   ];
@@ -22,7 +22,7 @@ async function registerCommands(client) {
         Routes.applicationGuildCommands(client.user.id, guildId),
         { body: commands }
       );
-      console.log(`✅ Registered /pingofftopic in guild ${guildId}`);
+      console.log(`✅ Registered commands in guild ${guildId}`);
     } catch (err) {
       console.error(`❌ Failed to register commands in guild ${guildId}:`, err);
     }
