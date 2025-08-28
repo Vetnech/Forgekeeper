@@ -21,12 +21,6 @@ async function execute(interaction) {
   const now = Date.now();
 
   try {
-    // Defer reply immediately to extend time window
-    if (!interaction.replied && !interaction.deferred) {
-      await interaction.deferReply({ flags: 64 });
-    }
-
-
     // 1️⃣ Ensure channel is whitelisted
     if (!Globals.Commands.PingOfftopic.includes(channel.id)) {
       return interaction.editReply({ content: '❌ This command cannot be used here.' });
@@ -64,11 +58,6 @@ async function execute(interaction) {
 
     // 7️⃣ Confirm to user
     await interaction.editReply({ content: '✅ Off-topic ping sent!' });
-
-  } catch (err) {
-    if (err.code === 10062) console.warn('⚠️ Interaction expired before reply could be sent.');
-    else throw err;
-  }
 }
 
 
