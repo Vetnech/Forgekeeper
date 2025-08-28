@@ -27,7 +27,6 @@ client.on('ready', async () => {
   await registerCommands(client);
 });
 
-
 // Delegate guildMemberUpdate entirely to RoleManager
 client.on('guildMemberUpdate', async (_, newMember) => {
   await RoleManager.handleMemberUpdate(newMember);
@@ -38,7 +37,23 @@ client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return;
 
   if (interaction.commandName === 'pingofftopic') {
-    await PingOfftopic.execute(interaction);
+    try {
+      // Step 1: Acknowledge immediately to avoid timeout
+      await interaction.deferReply({ ephemeral: false }); // bot is "thinking"
+
+      // Step 2: Execute the command
+      const result = await PingOfftopic.execute(interaction);
+
+      // Step 3: Send the actual response
+      await interaction.editReply(result);
+    } catch (error) {
+      console.error('Error executing /pingofftopic:', error);
+      if (interaction.deferred || interaction.replied) {
+        await interaction.editReply('❌ Something went wrong while processing your request.');
+      } else {
+        await interaction.reply('❌ Something went wrong while processing your request.');
+      }
+    }
   }
 });
 
