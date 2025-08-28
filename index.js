@@ -20,7 +20,7 @@ const client = new Client({
 });
 
 // On ready
-client.on('ready', async () => {
+client.on('clientReady', async () => {
   console.log(`🤖 Logged in as ${client.user.tag}`);
 
   // Auto-register slash commands in all guilds
