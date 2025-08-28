@@ -34,27 +34,7 @@ client.on('guildMemberUpdate', async (_, newMember) => {
 
 // Slash command handler for /pingofftopic
 client.on('interactionCreate', async interaction => {
-  if (!interaction.isCommand()) return;
-
-  if (interaction.commandName === 'pingofftopic') {
-    try {
-      // Step 1: Acknowledge immediately to avoid timeout
-      await interaction.deferReply({ ephemeral: false }); // bot is "thinking"
-
-      // Step 2: Execute the command
-      const result = await PingOfftopic.execute(interaction);
-
-      // Step 3: Send the actual response
-      await interaction.editReply(result);
-    } catch (error) {
-      console.error('Error executing /pingofftopic:', error);
-      if (interaction.deferred || interaction.replied) {
-        await interaction.editReply('❌ Something went wrong while processing your request.');
-      } else {
-        await interaction.reply('❌ Something went wrong while processing your request.');
-      }
-    }
-  }
+  await PingOfftopic.execute(interaction);
 });
 
 client.login(process.env.BOT_TOKEN);
